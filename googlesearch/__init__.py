@@ -45,9 +45,11 @@ else:
 
 try:
     from bs4 import BeautifulSoup
+
     is_bs4 = True
 except ImportError:
     from BeautifulSoup import BeautifulSoup
+
     is_bs4 = False
 
 __all__ = [
@@ -90,7 +92,7 @@ home_folder = os.getenv('HOME')
 if not home_folder:
     home_folder = os.getenv('USERHOME')
     if not home_folder:
-        home_folder = '.'   # Use the current folder on error.
+        home_folder = '.'  # Use the current folder on error.
 cookie_jar = LWPCookieJar(os.path.join(home_folder, '.google-cookie'))
 try:
     cookie_jar.load()
@@ -110,6 +112,7 @@ try:
     try:
         user_agents_file = os.path.join(install_folder, 'user_agents.txt.gz')
         import gzip
+
         fp = gzip.open(user_agents_file, 'rb')
         try:
             user_agents_list = [_.strip() for _ in fp.readlines()]
@@ -255,7 +258,7 @@ def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
     # Prepare domain list if it exists.
     if domains:
         query = query + ' ' + ' OR '.join(
-                                'site:' + domain for domain in domains)
+            'site:' + domain for domain in domains)
 
     # Prepare the search string.
     query = quote_plus(query)
@@ -329,7 +332,11 @@ def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
 
         # Process every anchored URL.
         for a in anchors:
-
+            try:
+                text = a.previous_element.previous_element.contents
+                text = [i.text for i in text]
+            except AttributeError:
+                text = None
             # Get the URL from the anchor tag.
             try:
                 link = a['href']
@@ -348,7 +355,7 @@ def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
             hashes.add(h)
 
             # Yield the result.
-            yield link
+            yield link, text
 
             # Increase the results counter.
             # If we reached the limit, stop.
@@ -450,3 +457,10 @@ def lucky(*args, **kwargs):
     :return: URL found by Google.
     """
     return next(search(*args, **kwargs))
+
+
+# Get the first 20 hits for: "Breaking Code" WordPress blog
+searched2 = []
+for url in search('"OFF YOUR PURCHASE" site:amazon.com', tbs='qdr:y', stop=20):
+    print(url)
+    searched2.append(url)

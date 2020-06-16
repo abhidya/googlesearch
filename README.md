@@ -1,19 +1,16 @@
-googlesearch
+Amazon Coupon Finder
 ============
 
-Google search from Python.
+searches Google for cached amazon coupons. forked MarioVilas/googlesearch for a starting point
 
-https://python-googlesearch.readthedocs.io/en/latest/
 
 Usage example
 -------------
 
-    # Get the first 20 hits for: "Breaking Code" WordPress blog
-    from googlesearch import search
-    for url in search('"Breaking Code" WordPress blog', stop=20):
-        print(url)
+    python3 googlesearch/__init__.py
+
 
 Installing
 ----------
 
-    pip install google
+    pip install -r requirements.txt
